@@ -1,0 +1,8 @@
+.invalid-feedback {
+    display: block;
+    font-size:150%;
+    text-align: center;
+}
+.table thead th {
+    background: #e0e0e0;
+}

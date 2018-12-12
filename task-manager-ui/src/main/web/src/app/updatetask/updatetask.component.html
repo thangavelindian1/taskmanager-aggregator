@@ -1,0 +1,76 @@
+<div class="container">
+<div class="col-xl-8 col-lg-8 col-md-12 offset-md-2 offset-sm-0">
+  <form (ngSubmit)="onSubmit()" #taskForm="ngForm">
+    <div class="form-group row">
+      <label for="task" class="col-sm-2 col-form-label">Task:</label>
+      <div class="col-sm-9">
+          <input type="text" class="form-control" id="taskName" required [(ngModel)]="taskDetails.taskName" #taskName="ngModel" name="taskName" >
+          <div *ngIf="taskName.invalid && (taskName.dirty || taskName.touched)">
+            <div *ngIf="taskName.errors?.required" class="invalid-feedback">Required field</div>
+          </div>
+           <div *ngIf="taskNameAlreadyExist" class="invalid-feedback">Task name already existing</div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="priority" class="col-sm-2 col-form-label">Priority:</label>
+      <div class="col-sm-9 slidecontainer">
+        <span>0</span><span class="max-value">30</span><input type="range" min="0" max="30" required class="slider" id="priority" name="priority" [(ngModel)]="taskDetails.priority" #priority="ngModel">
+        <div *ngIf="priority.invalid && (priority.dirty || priority.touched)">
+            <div *ngIf="priority.errors?.required" class="invalid-feedback">Required field</div>
+          </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="parenttask" class="col-sm-2 col-form-label">Parent Task:</label>
+      <div class="col-sm-9">
+          <input list="tasklist" class="form-control" id="parentTask" name="parentTask" name="parentTask" [(ngModel)]="taskDetails.parentTaskDetail.parentTaskName">
+          <datalist id="tasklist">
+              <option *ngFor="let task of parentTaskList" [value]="task.taskName"></option>
+          </datalist>
+          <div *ngIf="invalidParent" class="invalid-feedback">You have entered not a task</div>
+      </div>
+    </div>
+    
+  <div class="form-group row">
+    <label for="Start Date" class="col-sm-2 col-form-label">Start Date:</label>
+    <div class="col-sm-9">
+        <input type="date" class="form-control" id="startDate" required #startDate="ngModel" name="startDate" [ngModel]="taskDetails.startDate | date:'yyyy-MM-dd'" (ngModelChange)="taskDetails.startDate = $event" >
+        <div *ngIf="startDate.invalid && (startDate.dirty || startDate.touched)" class="invalid-feedback">
+          <div *ngIf="startDate.errors?.required">Required field</div>
+        </div>
+    </div>
+  </div>      
+  <div class="form-group row">
+    <label for="End Date" class="col-sm-2 col-form-label">End Date:</label>
+    <div class="col-sm-9">
+      <input type="date" class="form-control" id="endDate" required #endDate="ngModel" name="endDate" [ngModel]="taskDetails.endDate | date:'yyyy-MM-dd'" (ngModelChange)="taskDetails.endDate = $event">
+      <div *ngIf="endDate.invalid && (endDate.dirty || endDate.touched)" class="invalid-feedback">
+        <div *ngIf="endDate.errors?.required">Required field</div>
+      </div>
+      <div *ngIf="!endDateRange" class="invalid-feedback">End date should be greater than start date</div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-9" *ngIf="undefined==this.sharedData.editTask">
+      <input type="submit" class="btn btn-primary" value="Add Task" [disabled]="taskForm.invalid" />&nbsp;
+      <!--<button type="button" class="btn btn-secondary" (click)="resetForm();">Reset</button>-->
+      <input type="reset" value="Reset" class="btn btn-secondary" (click)="taskForm.resetForm({});resetForm();" />
+    </div>
+    <div class="col-sm-9" *ngIf="undefined!=this.sharedData.editTask">
+      <button type="submit" class="btn btn-primary">Update</button>&nbsp;
+      <button type="button" class="btn btn-secondary" (click)="returnViewTask()">Cancel</button>
+    </div>
+
+  </div>
+  <div class="form-group row" [hidden]="!technicalError">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-9">
+          <div class="invalid-feedback">We've encountered a technical error. Please try again later.</div>
+    </div>
+  </div>
+  </form>
+</div>
+</div>
+
+<task-screenfreeze class="text-align-center" [hidden]="!screenLoader"></task-screenfreeze>

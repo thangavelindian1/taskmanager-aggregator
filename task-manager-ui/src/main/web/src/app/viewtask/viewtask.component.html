@@ -1,0 +1,77 @@
+ <div class="container-fluid" [hidden]="technicalError">
+   <div class="col-sm-10 offset-md-1 offset-sm-0">
+ <div class="form-group row">
+    <label class="col-sm-1 col-form-label">Task: </label>
+    <div class="col-sm-5">
+      <input type="text" class="form-control" id="task" name="task" [(ngModel)]="filterModel.task" />
+    </div>
+    <label class="col-sm-1 col-form-label">Parent Task: </label>
+    <div class="col-sm-5">
+      <input type="text" class="form-control" id="parentTask" name="parentTask" [(ngModel)]="filterModel.parentTask"/>
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-sm-1 col-form-label">Proirty From: </label>
+    <div class="col-sm-2">
+      <input type="text" class="form-control" id="priorityFrom" name="priorityFrom" [(ngModel)]="filterModel.priorityFrom"/>
+    </div>
+    <label class="col-sm-1 col-form-label">Proirty To: </label>
+    <div class="col-sm-2">
+      <input type="text" class="form-control" id="priorityTo" name="priorityTo" [(ngModel)]="filterModel.priorityTo"/>
+    </div>
+    <label class="col-sm-1 col-form-label">Start Date: </label>
+    <div class="col-sm-2">
+      <input type="date" class="form-control" id="startDate" #startDate="ngModel" name="startDate" [(ngModel)]="filterModel.startDate">
+    </div>
+    <label class="col-sm-1 col-form-label">End Date: </label>
+    <div class="col-sm-2">
+      <input type="date" class="form-control" id="endDate" #endDate="ngModel" name="endDate" [(ngModel)]="filterModel.endDate">
+    </div>
+</div>
+<div style="overflow-x:auto">
+<table class="table app-custom-table">
+    <thead>
+      <tr>
+            <th>Task</th>
+            <th>Parent</th>
+				    <th>Priority</th>
+				    <th>Start</th>   
+            <th>End</th>
+            <th></th>               
+      </tr>
+    </thead>
+			 <tbody *ngFor="let taskModel of taskList | taskFilter : filterModel">
+      		<tr>
+            <td><p class="taskbadge">{{taskModel.taskName}}</p></td>
+            <td><p *ngIf="null !== taskModel.parentTaskDetail" class="taskbadge">{{taskModel.parentTaskDetail.parentTaskName}}</p>
+            <p *ngIf="null == taskModel.parentTaskDetail" class="taskbadge">This Task Has No Parent</p></td>
+            <td>{{taskModel.priority}}</td>
+            <td>{{taskModel.startDate}}</td>
+            <td>{{taskModel.endDate}}</td>
+						<td class="min-width-171" *ngIf="(toDayDate | date : 'yyyy-MM-dd') <= (taskModel.endDate | date : 'yyyy-MM-dd')">
+               <button type="submit"  id="add-task"  (click)= "updateTask(taskModel)" class="btn btn-primary">Edit</button> &nbsp;
+               <button type="button"  id="reset-task" (click)="completeTask(taskModel)" class="margin-left-5 btn btn-secondary">End Task</button>
+						</td>
+            <td class="min-width-171" *ngIf="(toDayDate | date : 'yyyy-MM-dd') > (taskModel.endDate | date : 'yyyy-MM-dd')">
+               <button type="submit"  id="add-task"  (click)= "updateTask(taskModel)" class="btn btn-primary" disabled>Edit</button> &nbsp;
+               <button type="button"  id="reset-task" (click)="completeTask(taskModel)" class="margin-left-5 btn btn-secondary" disabled>End Task</button>
+						</td>
+					</tr>
+				</tbody>
+        <tbody *ngIf='null == taskList || taskList.length == 0'>
+             <tr>
+               <td> No recored found <td>
+             </tr>  
+        </tbody>
+        
+</table>
+   </div>
+ </div>
+ </div>
+<div class="container-fluid margin-top-10" [hidden]="!technicalError">
+  <div class="invalid-feedback align-center">We've encountered a technical error. Please try again later.</div>
+</div>
+
+<task-screenfreeze class="text-align-center" [hidden]="!screenLoader"></task-screenfreeze>
+
+
